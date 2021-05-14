@@ -51,6 +51,7 @@
   call dein#add('rhysd/committia.vim')
   call dein#add('sgeb/vim-diff-fold')
   call dein#add('airblade/vim-gitgutter')
+  call dein#add('airblade/vim-rooter')
   call dein#add('junegunn/gv.vim')
   call dein#add('lambdalisue/gina.vim')
   call dein#add('scrooloose/nerdtree')
@@ -129,9 +130,10 @@
   call dein#add('ryanoasis/vim-devicons')
   call dein#add('junegunn/fzf', { 'build': './install --all', 'merged': 0 })
   call dein#add('junegunn/fzf.vim', { 'depends': 'fzf' })
+  call dein#add('mbbill/undotree')
 
   " pluggin for LSP
-  call dein#add('neoclide/coc.nvim', {'merged':0, 'rev': 'release'})
+  " call dein#add('neoclide/coc.nvim', {'merged':0, 'rev': 'release'})
   if dein#check_install()
     call dein#install()
     let pluginsExist=1
@@ -142,8 +144,6 @@
 " }}}
 
 " System Settings  ----------------------------------------------------------{{{
-  " let &t_Cs = "\e[6m"
-  " let &t_Ce = "\e[24m"
 " Neovim Settings
   set termguicolors
   set mouse=a
@@ -172,10 +172,10 @@
   set noautochdir
   set updatetime=500
   set fillchars+=vert:│
-" leader is ,
   let mapleader = " "
   set undofile
-  set undodir="$HOME/.VIM_UNDO_FILES"
+  set undodir="$HOME/.vim/undodir"
+  set incsearch
 " Remember cursor position between vim sessions
  autocmd BufReadPost *
              \ if line("'\"") > 0 && line ("'\"") <= line("$") |
@@ -210,10 +210,6 @@
   nnoremap <silent><expr> <Up>   v:count == 0 ? 'gk' : 'k'
   nnoremap <silent><expr> <Down> v:count == 0 ? 'gj' : 'j'
 
-  noremap  <silent> <Home> g<Home>
-  noremap  <silent> <End>  g<End>
-  inoremap <silent> <Home> <C-o>g<Home>
-  inoremap <silent> <End>  <C-o>g<End>
 " copy current files path to clipboard
   nmap cp :let @+= expand("%") <cr>
 " Neovim terminal mapping
@@ -223,22 +219,15 @@
   inoremap <c-d> <esc>ddi
   noremap H ^
   noremap L g_
-  noremap K 5k
-  " nnoremap K 5k
-" this is the best, let me tell you why
-" how annoying is that everytime you want to do something in vim
-" you have to do shift-; to get :, can't we just do ;?
-" Plus what does ; do anyways??
 " if you do have a plugin that needs ;, you can just swap the mapping
-" nnoremap : ;
-" give it a try and you will like it
-"  nnoremap ; :
-  inoremap <c-f> <c-x><c-f>
+
 " Copy to osx clipboard
   vnoremap y "*y<CR>
   noremap Y y$
   vnoremap y myy`y
   vnoremap Y myY`y
+
+" Multicursor next match, previous match and skip match
   let g:multi_cursor_next_key='<C-n>'
   let g:multi_cursor_prev_key='<C-p>'
   let g:multi_cursor_skip_key='<C-x>'
@@ -571,11 +560,22 @@
 
 " fzf --------------------------------------------------------------------{{{
 "
-  nnoremap <silent> <expr> <Leader><Leader> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
   nnoremap <silent> <Leader>C        :Colors<CR>
   nnoremap <silent> <Leader><Enter>  :Buffers<CR>
-  map <C-F> :Ag<CR>
   nnoremap <silent> <C-A> :Commands<CR>
+  function! s:find_git_root()
+    let git_dir = system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
+    if git_dir != ''
+        execute 'GFiles' git_dir
+    else
+        execute 'Files'
+    endif
+  endfunction
+
+  " nnoremap <silent> <expr> <Leader><Leader> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
+  command! ProjectFiles execute s:find_git_root()
+  nnoremap <silent> <Leader><Leader> :ProjectFiles<CR>
+  map <C-F> :Ag<CR>
 
 "}}}
 
@@ -962,132 +962,6 @@
   " let g:racer_experimental_completer = 1
 
 "}}}
-
-" coc ----------------------------------------------------------------------{{{
-
-" if hidden is not set, TextEdit might fail.
-set hidden
-
-" Some servers have issues with backup files, see #649
-set nobackup
-set nowritebackup
-
-" Better display for messages
-" set cmdheight=2
-
-" You will have bad experience for diagnostic messages when it's default 4000.
-set updatetime=300
-
-" don't give |ins-completion-menu| messages.
-set shortmess+=c
-
-" always show signcolumns
-set signcolumn=yes
-
-" Use tab for trigger completion with characters ahead and navigate.
-" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
-
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
-" Coc only does snippet and additional edit on confirm.
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
-" Use `[c` and `]c` to navigate diagnostics
-nmap <silent> [c <Plug>(coc-diagnostic-prev)
-nmap <silent> ]c <Plug>(coc-diagnostic-next)
-
-" Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-" Use K to show documentation in preview window
-nnoremap <silent> H :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-" Highlight symbol under cursor on CursorHold
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Remap for rename current word
-nmap <leader>rn <Plug>(coc-rename)
-
-" Remap for format selected region
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
-
-augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
-
-" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap for do codeAction of current line
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
-nmap <leader>qf  <Plug>(coc-fix-current)
-
-" Use <tab> for select selections ranges, needs server support, like: coc-tsserver, coc-python
-nmap <silent> <TAB> <Plug>(coc-range-select)
-xmap <silent> <TAB> <Plug>(coc-range-select)
-xmap <silent> <S-TAB> <Plug>(coc-range-select-backword)
-
-" Use `:Format` to format current buffer
-command! -nargs=0 Format :call CocAction('format')
-
-" Use `:Fold` to fold current buffer
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-
-" use `:OR` for organize import of current buffer
-command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-
-" Add status line support, for integration with other plugin, checkout `:h coc-status`
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-
-" Using CocList
-" Show all diagnostics
-nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions
-nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document
-nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols
-nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list
-nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
-"}}}
-
 
 " tmux navigator ----------------------------------------------------------------------{{{
 let g:tmux_navigator_no_mappings = 1

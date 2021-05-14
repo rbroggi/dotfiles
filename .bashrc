@@ -85,6 +85,16 @@ if [ -f ~/.scripts/tools/balabit.sh ]; then
     source ~/.scripts/tools/balabit.sh
 fi
 
+# oc bash completion
+if [ -f ~/.programs/oc/oc_bash_completion ]; then
+  source ~/.programs/oc/oc_bash_completion
+fi
+
+if [ -f ~/.sdkman/bin/sdkman-init.sh ]; then
+  source ~/.sdkman/bin/sdkman-init.sh
+fi
+
+
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -96,6 +106,14 @@ if ! shopt -oq posix; then
   fi
 fi
 
+if kubectl &> /dev/null; then
+  source <(kubectl completion bash)
+fi
+
 # last part of the command makes CTRL+R default to exact match and if the
 # researched string is prefixed with ' then it will be fuzzy finded
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash && export FZF_CTRL_R_OPTS='--exact'
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/home/rbroggi/.sdkman"
+[[ -s "/home/rbroggi/.sdkman/bin/sdkman-init.sh" ]] && source "/home/rbroggi/.sdkman/bin/sdkman-init.sh"

@@ -42,9 +42,11 @@ export PATH="$PATH:$(du "$HOME/.commands/" | cut -f2 | tr '\n' ':')"
 # Adds anyconnect vpn access
 export PATH="$PATH:/opt/cisco/anyconnect/bin"
 
+# Adds screenlayouts to the path
+export PATH="$PATH:${HOME}/.screenlayout"
 
 #JetBrains
-export PATH="$PATH:$HOME/.programs/clion-2019.1/bin:$HOME/.programs/idea-IU-191.6183.87/bin:$HOME/.programs/pycharm-2019.1.1/bin:$HOME/.programs/WebStorm-191.6183.63/bin:$HOME/.programs/GoLand-2019.1/bin:$HOME/.programs/ulam:"
+export PATH="$PATH:$HOME/.programs/clion-2019.1/bin:$HOME/.programs/idea-IU-202.7660.26/bin:$HOME/.programs/pycharm-2019.1.1/bin:$HOME/.programs/WebStorm-202.6948.73/bin:$HOME/.programs/GoLand-2020.3.1/bin:$HOME/.programs/ulam:"
 
 #Bat (enhanced cat)
 export PATH="$PATH:$HOME/.programs/bat-v0.12.1-x86_64-unknown-linux-gnu"
@@ -53,9 +55,14 @@ export BAT_THEME="1337"
 #tts
 export PATH="$PATH:$HOME/.programs/tts"
 
+#Visual services
+export PATH="$PATH:$HOME/.programs/visual-services"
+
 #AT - amadeus_terminal
 export PATH="$PATH:$HOME/.programs/amadeus_terminal/amadeus_terminal"
 
+#oc
+export PATH="$PATH:$HOME/.programs/oc/openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit"
 
 #go binaries
 export PATH="$PATH:$GOROOT/bin:$GOPATH/bin"
@@ -63,6 +70,20 @@ export PATH="$PATH:$GOROOT/bin:$GOPATH/bin"
 #pachctl - pachiderm
 export PATH="$PATH:$HOME/.programs/pachctl"
 
+#mvn - maven
+export PATH="$PATH:$HOME/.programs/mvn/apache-maven-3.6.3/bin"
 
+#rust bin
+export PATH="$HOME/.cargo/bin:$PATH"
 
+#citrix
+export ICAROOT="/home/rbroggi/.programs/ICAClient/linuxx64"
 
+# VSCode code
+export PATH="$PATH:$HOME/.programs/VSCode-linux-x64/bin"
+
+# Minikube
+export PATH="$PATH:$HOME/.programs/minikube"
+
+# Linkerd
+export "PATH=$PATH:/home/rbroggi/.linkerd2/bin"
