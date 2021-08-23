@@ -45,8 +45,8 @@ export PATH="$PATH:/opt/cisco/anyconnect/bin"
 # Adds screenlayouts to the path
 export PATH="$PATH:${HOME}/.screenlayout"
 
-#JetBrains
-export PATH="$PATH:$HOME/.programs/clion-2019.1/bin:$HOME/.programs/idea-IU-202.7660.26/bin:$HOME/.programs/pycharm-2019.1.1/bin:$HOME/.programs/WebStorm-202.6948.73/bin:$HOME/.programs/GoLand-2020.3.1/bin:$HOME/.programs/ulam:"
+# ULAM
+export PATH="$PATH:$HOME/.programs/ulam:"
 
 #Bat (enhanced cat)
 export PATH="$PATH:$HOME/.programs/bat-v0.12.1-x86_64-unknown-linux-gnu"
@@ -87,3 +87,6 @@ export PATH="$PATH:$HOME/.programs/minikube"
 
 # Linkerd
 export "PATH=$PATH:/home/rbroggi/.linkerd2/bin"
+
+# JetBrains Toolbox
+export "PATH=$PATH:/home/rbroggi/.local/share/JetBrains/Toolbox/bin"
